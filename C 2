@@ -1,0 +1,124 @@
+Practical Assignment 2: Write and execute suitable database triggers.
+Consider row level and statement level triggers.
+mysql> create database account;
+Query OK, 1 row affected (0.01 sec)
+mysql> use account
+Database changed
+mysql> create table account
+ -> (
+ -> acc_no int(20),
+ -> name varchar(20),
+ -> amount int(20)
+ -> );
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+mysql> insert into account values
+ -> (1,'RAJ',2000),
+ -> (2,'AJAY',3000),
+ -> (3,'RAHUL',6000);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3 Duplicates: 0 Warnings: 0
+mysql> insert into account values
+ -> (4,'AMIT',7000),
+ -> (5,'SATISH',8000);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2 Duplicates: 0 Warnings: 0
+mysql> select * from account;
++--------+--------+--------+
+| acc_no | name | amount |
++--------+--------+--------+
+| 1 | RAJ | 2000 |
+| 2 | AJAY | 3000 |
+| 3 | RAHUL | 6000 |
+| 4 | AMIT | 7000 |
+| 5 | SATISH | 8000 |
++--------+--------+--------+
+5 rows in set (0.00 sec)
+mysql> create table account_log
+ -> (
+ -> acc_no int(20),
+ -> name varchar(20),
+ -> amount int(20),
+ -> tran_type varchar(20),
+ -> tran_time timestamp
+ -> );
+Query OK, 0 rows affected, 2 warnings (0.03 sec)
+mysql> desc account;
++--------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| acc_no | int | YES | | NULL | |
+| name | varchar(20) | YES | | NULL | |
+| amount | int | YES | | NULL | |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> desc account_log;
++-----------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| acc_no | int | YES | | NULL | |
+| name | varchar(20) | YES | | NULL | |
+| amount | int | YES | | NULL | |
+| tran_type | varchar(20) | YES | | NULL | |
+| tran_time | timestamp | YES | | NULL | |
++-----------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+mysql> create trigger acc_log
+-> after update
+-> on account
+-> for each row
+-> begin
+-> declare tran_type varchar(20);
+-> declare amt varchar(20);
+-> if old.amount > new.amount then
+-> SET tran_type='Withdraw';
+-> SET amt=old.amount-new.amount;
+-> else
+-> SET tran_type='Deposited';
+-> SET amt=new.amount-old.amount;
+-> end if;
+-> insert into account_log
+values(old.acc_no,old.name,amt,tran_type,now());
+-> end
+-> //
+Query OK, 0 rows affected (0.07 sec)
+mysql> select * from account;
++--------+--------+--------+
+| acc_no | name | amount |
++--------+--------+--------+
+| 1 | RAJ | 2000 |
+| 2 | AJAY | 3000 |
+| 3 | RAHUL | 6000 |
+| 4 | AMIT | 7000 |
+| 5 | SATISH | 8000 |
++--------+--------+--------+
+5 rows in set (0.00 sec)
+mysql> update account set amount=5000 where acc_no=1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1 Changed: 1 Warnings: 0
+mysql> select * from account;
++--------+--------+--------+
+| acc_no | name | amount |
++--------+--------+--------+
+| 1 | RAJ | 5000 |
+| 2 | AJAY | 3000 |
+| 3 | RAHUL | 6000 |
+| 4 | AMIT | 7000 |
+| 5 | SATISH | 8000 |
++--------+--------+--------+
+5 rows in set (0.00 sec)
+mysql> select * from account_log;
+Empty set (0.00 sec)
+mysql> update account set amount=4000 where acc_no=1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1 Changed: 1 Warnings: 0
+mysql> select * from account;
++--------+--------+--------+
+| acc_no | name | amount |
++--------+--------+--------+
+| 1 | RAJ | 4000 |
+| 2 | AJAY | 3000 |
+| 3 | RAHUL | 6000 |
+| 4 | AMIT | 7000 |
+| 5 | SATISH | 8000 |
++--------+--------+--------+
+5 rows in set (0.00 sec)
