@@ -1,0 +1,137 @@
+Practical Assignment 5: Execute DDL/DML statements that demonstrate the
+use of views.
+Update the base table using its corresponding view. Also consider
+restrictions on updated
+views and performing view creation from multiple tables.
+mysql> Create database student;
+Query OK, 1 row affected (0.01 sec)
+mysql> use student
+Database changed
+mysql> create table student
+ -> (
+ -> sid int(10),
+ -> sname char(20),
+ -> marks int(10),
+ -> gender varchar(10),
+ -> branch varchar(20)
+ -> );
+Query OK, 0 rows affected, 2 warnings (0.03 sec)
+mysql> desc student;
++--------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| sid | int | YES | | NULL | |
+| sname | char(20) | YES | | NULL | |
+| marks | int | YES | | NULL | |
+| gender | varchar(10) | YES | | NULL | |
+| branch | varchar(20) | YES | | NULL | |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+mysql> insert into student values(100,'SHREE',99,'Male','IT');
+Query OK, 1 row affected (0.01 sec)
+mysql> insert into student values(101,'SNEHAL',98,'Female','IT');
+Query OK, 1 row affected (0.01 sec)
+mysql> insert into student values(103,'SUYASH',97,'Male','CSE');
+Query OK, 1 row affected (0.01 sec)
+mysql> insert into student values(104,'SACHIN',95,'Male','ENTC');
+Query OK, 1 row affected (0.01 sec)
+mysql> insert into student values(105,'NIKHIL',90,'Male','CE');
+Query OK, 1 row affected (0.01 sec)
+mysql> insert into student values(107,'JIVIKA',93,'Female','IT');
+Query OK, 1 row affected (0.01 sec)
+mysql> insert into student values(109,'Tejas',95,'Male','CSE');)
+Query OK, 1 row affected (0.01 sec)
+mysql> select * from student;
++------+--------+-------+--------+--------+
+| sid | sname | marks | gender | branch |
++------+--------+-------+--------+--------+
+| 100 | SHREE | 99 | Male | IT |
+| 101 | SNEHAL | 98 | Female | IT |
+| 103 | SUYASH | 97 | Male | CSE |
+| 104 | SACHIN | 95 | Male | ENTC |
+| 105 | NIKHIL | 90 | Male | CE |
+| 107 | JIVIKA | 93 | Female | IT |
+| 109 | Tejas | 95 | Male | CSE |
++------+--------+-------+--------+--------+
+7 rows in set (0.00 sec)
+mysql> create view IT_STUDENT as
+ -> select * from student where branch='IT';
+Query OK, 0 rows affected (0.02 sec)
+mysql> show tables;
++-------------------+
+| Tables_in_student |
++-------------------+
+| it_student |
+| student |
++-------------------+
+2 rows in set (0.00 sec)
+mysql> select * from IT_student;
++------+--------+-------+--------+--------+
+| sid | sname | marks | gender | branch |
++------+--------+-------+--------+--------+
+| 100 | SHREE | 99 | Male | IT |
+| 101 | SNEHAL | 98 | Female | IT |
+| 107 | JIVIKA | 93 | Female | IT |
++------+--------+-------+--------+--------+
+3 rows in set (0.00 sec)
+mysql> select * from student;
++------+--------+-------+--------+--------+
+| sid | sname | marks | gender | branch |
++------+--------+-------+--------+--------+
+| 100 | SHREE | 99 | Male | IT |
+| 101 | SNEHAL | 98 | Female | IT |
+| 103 | SUYASH | 97 | Male | CSE |
+| 104 | SACHIN | 95 | Male | ENTC |
+| 105 | NIKHIL | 90 | Male | CE |
+| 107 | JIVIKA | 93 | Female | IT |
+| 109 | Tejas | 95 | Male | CSE |
++------+--------+-------+--------+--------+
+7 rows in set (0.00 sec)
+mysql> create view CSE_STUDENT as
+ -> select * from student where branch='CSE';
+Query OK, 0 rows affected (0.02 sec)
+mysql> select * from CSE_STUDENT;
++------+--------+-------+--------+--------+
+| sid | sname | marks | gender | branch |
++------+--------+-------+--------+--------+
+| 103 | SUYASH | 97 | Male | CSE |
+| 109 | Tejas | 95 | Male | CSE |
++------+--------+-------+--------+--------+
+2 rows in set (0.00 sec)
+mysql> create view ENTC_STUDENT as
+ -> select * from student where branch='ENTC';
+Query OK, 0 rows affected (0.01 sec)
+mysql> select * from ENTC_STUDENT;
++------+--------+-------+--------+--------+
+| sid | sname | marks | gender | branch |
++------+--------+-------+--------+--------+
+| 104 | SACHIN | 95 | Male | ENTC |
++------+--------+-------+--------+--------+
+1 row in set (0.00 sec)
+mysql> update IT_STUDENT
+ -> set marks=99 where sid=100;
+Query OK, 0 rows affected (0.01 sec)
+Rows matched: 1 Changed: 0 Warnings: 0
+mysql> select * from student;
++------+--------+-------+--------+--------+
+| sid | sname | marks | gender | branch |
++------+--------+-------+--------+--------+
+| 100 | SHREE | 99 | Male | IT |
+| 101 | SNEHAL | 98 | Female | IT |
+| 103 | SUYASH | 97 | Male | CSE |
+| 104 | SACHIN | 95 | Male | ENTC |
+| 105 | NIKHIL | 90 | Male | CE |
+| 107 | JIVIKA | 93 | Female | IT |
+| 109 | Tejas | 95 | Male | CSE |
++------+--------+-------+--------+--------+
+7 rows in set (0.00 sec)
+mysql> show tables;
++-------------------+
+| Tables_in_student |
++-------------------+
+| cse_student |
+| entc_student |
+| it_student |
+| student |
++-------------------+
+4 rows in set (0.00 sec)
