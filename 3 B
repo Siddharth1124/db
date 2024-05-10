@@ -1,0 +1,116 @@
+Practical Assignment 3: Create Table with primary key and foreign key
+constraints.
+a. Alter tables with add and modify
+b. Drop table
+mysql> create database Customer;
+Query OK, 1 row affected (0.01 sec)
+mysql> use Customer
+Database changed
+mysql> create table Customer
+ -> (
+ -> c_id int primary key,
+ -> c_name varchar(50)
+ -> );
+Query OK, 0 rows affected (0.03 sec)
+mysql> create table orders
+ -> (
+ -> order_id int primary key,
+ -> order_date DATE,
+ -> c_id int,
+ -> foreign key (c_id) references customer (c_id)
+ -> );
+Query OK, 0 rows affected (0.05 sec)
+mysql> desc Customer;
++--------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| c_id | int | NO | PRI | NULL | |
+| c_name | varchar(50) | YES | | NULL | |
++--------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+mysql> desc orders;
++------------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| order_id | int | NO | PRI | NULL | |
+| order_date | date | YES | | NULL | |
+| c_id | int | YES | MUL | NULL | |
++------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> alter table Customer
+ -> add phone_no varchar(20);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+mysql> select * from Customer;
+Empty set (0.01 sec)
+mysql> desc Customer;
++----------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| c_id | int | NO | PRI | NULL | |
+| c_name | varchar(50) | YES | | NULL | |
+| phone_no | varchar(20) | YES | | NULL | |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> alter table Customer
+ -> modify c_name varchar(100);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+mysql> desc Customer;
++----------+--------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| c_id | int | NO | PRI | NULL | |
+| c_name | varchar(100) | YES | | NULL | |
+| phone_no | varchar(20) | YES | | NULL | |
++----------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> alter table Customer
+ -> drop phone_no;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+mysql> desc Customer;
++--------+--------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| c_id | int | NO | PRI | NULL | |
+| c_name | varchar(100) | YES | | NULL | |
++--------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+mysql> desc orders;
++------------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| order_id | int | NO | PRI | NULL | |
+| order_date | date | YES | | NULL | |
+| c_id | int | YES | MUL | NULL | |
++------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> alter table orders
+ -> add constraint fk_orders_customer
+ -> foreign key (c_id)
+ -> references customer(c_id);
+Query OK, 0 rows affected (0.08 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+mysql> desc orders;
++------------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| order_id | int | NO | PRI | NULL | |
+| order_date | date | YES | | NULL | |
+| c_id | int | YES | MUL | NULL | |
++------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> alter table orders
+ -> drop foreign key fk_orders_customer;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0 Duplicates: 0 Warnings: 0
+mysql> desc orders;
++------------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| order_id | int | NO | PRI | NULL | |
+| order_date | date | YES | | NULL | |
+| c_id | int | YES | MUL | NULL | |
++------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
