@@ -1,0 +1,197 @@
+Practical Assignment 3: Write a PL/SQL block to implement all types of
+cursor.
+mysql> create database PVGSE;
+Query OK, 1 row affected (0.01 sec)
+mysql> use pvgse
+Database changed
+mysql> create table student
+ -> (
+ -> sno int(10),
+ -> name varchar(10),
+ -> sub1 int(3),
+ -> sub2 int(3),
+ -> sub3 int(3),
+ -> total int(3),
+ -> percentage float(5,2)
+ -> );
+Query OK, 0 rows affected, 6 warnings (0.03 sec)
+mysql> create table student_first
+ -> (
+ -> sno int(10),
+ -> name varchar(10),
+ -> sub1 int(3),
+ -> sub2 int(3),
+ -> sub3 int(3),
+ -> total int(3),
+ -> percentage float(5,2)
+ -> );
+Query OK, 0 rows affected, 6 warnings (0.04 sec)
+mysql> create table student_pass
+ -> (
+ -> sno int(10),
+ -> name varchar(10),
+ -> sub1 int(3),
+ -> sub2 int(3),
+ -> sub3 int(3),
+ -> total int(3),
+ -> percentage float(5,2)
+ -> );
+Query OK, 0 rows affected, 6 warnings (0.03 sec)
+mysql> create table student_fail
+ -> (
+ -> sno int(10),
+ -> name varchar(10),
+ -> sub1 int(3),
+ -> sub2 int(3),
+ -> sub3 int(3),
+ -> total int(3),
+ -> percentage float(5,2)
+ -> );
+Query OK, 0 rows affected, 6 warnings (0.04 sec)
+mysql> desc student;
++------------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| sno | int | YES | | NULL | |
+| name | varchar(10) | YES | | NULL | |
+| sub1 | int | YES | | NULL | |
+| sub2 | int | YES | | NULL | |
+| sub3 | int | YES | | NULL | |
+| total | int | YES | | NULL | |
+| percentage | float(5,2) | YES | | NULL | |
++------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+mysql> desc student_first;
++------------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| sno | int | YES | | NULL | |
+| name | varchar(10) | YES | | NULL | |
+| sub1 | int | YES | | NULL | |
+| sub2 | int | YES | | NULL | |
+| sub3 | int | YES | | NULL | |
+| total | int | YES | | NULL | |
+| percentage | float(5,2) | YES | | NULL | |
++------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+mysql> desc student_pass;
++------------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| sno | int | YES | | NULL | |
+| name | varchar(10) | YES | | NULL | |
+| sub1 | int | YES | | NULL | |
+| sub2 | int | YES | | NULL | |
+| sub3 | int | YES | | NULL | |
+| total | int | YES | | NULL | |
+| percentage | float(5,2) | YES | | NULL | |
++------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+mysql> desc student_fail;
++------------+-------------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| sno | int | YES | | NULL | |
+| name | varchar(10) | YES | | NULL | |
+| sub1 | int | YES | | NULL | |
+| sub2 | int | YES | | NULL | |
+| sub3 | int | YES | | NULL | |
+| total | int | YES | | NULL | |
+| percentage | float(5,2) | YES | | NULL | |
++------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+mysql> insert into student values
+ -> (1,'AMIT',55,66,77,NULL,NULL),
+ -> (2,'AJIT',66,44,77,NULL,NULL),
+ -> (3,'SUJIT',50,60,70,NULL,NULL),
+ -> (4,'JIT',56,74,70,NULL,NULL),
+ -> (5,'RAHUL',50,50,48,NULL,NULL),
+ -> (6,'KAPIL',65,45,75,NULL,NULL),
+ -> (7,'RAJ',52,60,50,NULL,NULL),
+ -> (8,'SUSHIL',40,30,35,NULL,NULL),
+ -> (9,'RAMESH',50,50,50,NULL,NULL),
+ -> (10,'SUNIL',60,40,70,NULL,NULL);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10 Duplicates: 0 Warnings: 0
+mysql> select * from student;
++------+--------+------+------+------+-------+------------+
+| sno | name | sub1 | sub2 | sub3 | total | percentage |
++------+--------+------+------+------+-------+------------+
+| 1 | AMIT | 55 | 66 | 77 | NULL | NULL |
+| 2 | AJIT | 66 | 44 | 77 | NULL | NULL |
+| 3 | SUJIT | 50 | 60 | 70 | NULL | NULL |
+| 4 | JIT | 56 | 74 | 70 | NULL | NULL |
+| 5 | RAHUL | 50 | 50 | 48 | NULL | NULL |
+| 6 | KAPIL | 65 | 45 | 75 | NULL | NULL |
+| 7 | RAJ | 52 | 60 | 50 | NULL | NULL |
+| 8 | SUSHIL | 40 | 30 | 35 | NULL | NULL |
+| 9 | RAMESH | 50 | 50 | 50 | NULL | NULL |
+| 10 | SUNIL | 60 | 40 | 70 | NULL | NULL |
++------+--------+------+------+------+-------+------------+
+10 rows in set (0.00 sec)
+mysql> select * from student_first;
+Empty set (0.00 sec)
+mysql> select * from student_pass;
+Empty set (0.00 sec)
+mysql> select * from student_fail;
+Empty set (0.00 sec)
+mysql> DELIMITER //
+mysql> create procedure calgrade()
+ -> begin
+ -> declare s1,s2,s3,tot int(3);
+ -> declare id int(10);
+ -> declare per float(5,2);
+ -> declare sname varchar(10);
+ -> declare i,cnt int(3);
+ -> DECLARE stu_cur CURSOR FOR select sno,name,sub1,sub2,sub3 from
+student;
+ -> SET i=0;
+ -> select count(*) into cnt from student;
+ -> OPEN stu_cur;
+ -> REPEAT
+ -> FETCH stu_cur INTO id,sname,s1,s2,s3;
+ -> SET tot=(s1+s2+s3);
+ -> SET per=(tot/3);
+ -> IF per >= 60 THEN
+ -> insert into student_first values (id,sname,s1,s2,s3,tot,per);
+ -> ELSEIF per<60 and per>=50 THEN
+ -> insert into student_pass values (id,sname,s1,s2,s3,tot,per);
+ -> ELSE
+ -> insert into student_fail values (id,sname,s1,s2,s3,tot,per);
+ -> END IF;
+ -> update student set total=tot,percentage=per where sno=id;
+ -> SET i=i+1;
+ -> UNTIL i>=cnt END REPEAT;
+ -> CLOSE stu_cur;
+ -> end //
+Query OK, 0 rows affected, 4 warnings (0.01 sec)
+mysql> call calgrade()//
+Query OK, 1 row affected (0.10 sec)
+mysql> select * from student_first//
++------+-------+------+------+------+-------+------------+
+| sno | name | sub1 | sub2 | sub3 | total | percentage |
++------+-------+------+------+------+-------+------------+
+| 1 | AMIT | 55 | 66 | 77 | 198 | 66.00 |
+| 2 | AJIT | 66 | 44 | 77 | 187 | 62.33 |
+| 3 | SUJIT | 50 | 60 | 70 | 180 | 60.00 |
+| 4 | JIT | 56 | 74 | 70 | 200 | 66.67 |
+| 6 | KAPIL | 65 | 45 | 75 | 185 | 61.67 |
++------+-------+------+------+------+-------+------------+
+5 rows in set (0.00 sec)
+mysql> select * from student_pass//
++------+--------+------+------+------+-------+------------+
+| sno | name | sub1 | sub2 | sub3 | total | percentage |
++------+--------+------+------+------+-------+------------+
+| 7 | RAJ | 52 | 60 | 50 | 162 | 54.00 |
+| 9 | RAMESH | 50 | 50 | 50 | 150 | 50.00 |
+| 10 | SUNIL | 60 | 40 | 70 | 170 | 56.67 |
++------+--------+------+------+------+-------+------------+
+3 rows in set (0.00 sec)
+mysql> select * from student_fail//
++------+--------+------+------+------+-------+------------+
+| sno | name | sub1 | sub2 | sub3 | total | percentage |
++------+--------+------+------+------+-------+------------+
+| 5 | RAHUL | 50 | 50 | 48 | 148 | 49.33 |
+| 8 | SUSHIL | 40 | 30 | 35 | 105 | 35.00 |
++------+--------+------+------+------+-------+------------+
+2 rows in set (0.00 sec)
