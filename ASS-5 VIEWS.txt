@@ -1,0 +1,48 @@
+Practical Assignment 5: Execute DDL/DML statements that demonstrate the 
+use of views. 
+Update the base table using its corresponding view. Also consider 
+restrictions on updated
+views and performing view creation from multiple tables.
+
+Create database student;
+
+use student
+
+create table student
+ (
+ sid int(10),
+ sname char(20),
+ marks int(10),
+ gender varchar(10),
+ branch varchar(20)
+  );
+
+desc student;
+
+ insert into student values(100,'SHREE',99,'Male','IT');
+ insert into student values(101,'SNEHAL',98,'Female','IT');
+ insert into student values(103,'SUYASH',97,'Male','CSE');
+ insert into student values(104,'SACHIN',95,'Male','ENTC');
+ insert into student values(105,'NIKHIL',90,'Male','CE');
+ insert into student values(107,'JIVIKA',93,'Female','IT');
+ insert into student values(109,'Tejas',95,'Male','CSE');)
+ select * from student;
+
+ create view IT_STUDENT as
+select * from student where branch='IT';
+show tables;
+
+ select * from IT_student;
+
+ select * from student;
+
+create view CSE_STUDENT as
+ select * from student where branch='CSE';
+select * from CSE_STUDENT;
+ create view ENTC_STUDENT as
+ select * from student where branch='ENTC';
+select * from ENTC_STUDENT;
+ update IT_STUDENT
+ set marks=99 where sid=100;
+ select * from student;
+ show tables;

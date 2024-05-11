@@ -1,0 +1,41 @@
+Practical Assignment 3: Create Table with primary key and foreign key 
+constraints.
+a. Alter tables with add and modify
+b. Drop table
+
+
+ create database Customer;
+ use Customer
+ create table Customer
+ (
+ c_id int primary key,
+ c_name varchar(50)
+ );
+create table orders
+ (
+ order_id int primary key,
+ order_date DATE,
+ c_id int,
+ foreign key (c_id) references customer (c_id)
+ );
+ desc Customer;
+ desc orders;
+ alter table Customer
+ add phone_no varchar(20);
+ select * from Customer;
+ desc Customer;
+ alter table Customer
+ modify c_name varchar(100);
+ desc Customer;
+ alter table Customer
+ drop phone_no;
+ desc Customer;
+desc orders;
+ alter table orders
+ add constraint fk_orders_customer
+ foreign key (c_id)
+ references customer(c_id);
+ desc orders;
+ alter table orders
+ drop foreign key fk_orders_customer;
+ desc orders;
